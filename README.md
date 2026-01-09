@@ -34,48 +34,42 @@ The dataset contains real-world vehicle loan application data including:
 - Loan performance indicators
 
 **Target Variable:**
-```text
 loan_default
 1 = Default
 0 = No Default
 
 ---
 
-🧠 Model Training Approach
-1️⃣ Data Preprocessing
+## 🧠 Model Training Approach
 
-Handled missing values using median (numerical) and mode (categorical)
+### 1️⃣ Data Preprocessing
+- Handled missing values using **median** (numerical features) and **mode** (categorical features)
+- Encoded categorical variables (Employment Type)
+- Removed data leakage columns
+- Balanced class impact using `scale_pos_weight` to handle class imbalance
 
-Encoded categorical variables (Employment Type)
+---
 
-Removed data leakage columns
+### 2️⃣ Feature Engineering
+Key engineered features include:
+- **Loan-to-Value (LTV)**
+- **Income-to-EMI Ratio**
+- **Employment-based risk thresholds**
 
-Balanced class impact using scale_pos_weight
+These features help capture borrower affordability and repayment capacity.
 
-2️⃣ Feature Engineering
+---
 
-Key engineered features:
+### 3️⃣ Model Used
 
-Loan-to-Value (LTV)
+**XGBoost Classifier**
 
-Income-to-EMI Ratio
+**Why XGBoost?**
+- Handles non-linear patterns effectively
+- Performs strongly on tabular financial datasets
+- Robust to missing values and noisy data
 
-Employment-based risk thresholds
-
-3️⃣ Model Used
-
-XGBoost Classifier
-
-Why XGBoost?
-
-Handles non-linear patterns well
-
-Performs strongly on tabular financial data
-
-Robust to missing values
-
-Initial Parameters:
-
+**Initial Parameters:**
 XGBClassifier(
     n_estimators=300,
     max_depth=6,
@@ -84,112 +78,102 @@ XGBClassifier(
     eval_metric="logloss"
 )
 
-4️⃣ Hyperparameter Tuning
 
-Used RandomizedSearchCV to optimize:
+### 4️⃣ Hyperparameter Tuning
 
-n_estimators
+Used **RandomizedSearchCV** to optimize key XGBoost hyperparameters for improved performance and generalization:
 
-max_depth
+- `n_estimators`
+- `max_depth`
+- `learning_rate`
+- `subsample`
+- `colsample_bytree`
 
-learning_rate
+The best-performing parameter combination was selected based on cross-validation results and used to train the **final production model**.
 
-subsample
+---
 
-colsample_bytree
+### 5️⃣ Model Evaluation
 
-Best tuned parameters were saved and used in the final model.
+The trained model was evaluated using the following metrics:
 
-5️⃣ Model Evaluation
+- **Precision**
+- **Recall** (with special focus on the default class)
+- **F1-score**
+- **Confusion Matrix**
 
-Metrics used:
+The optimization objective prioritized **high recall for defaulters**, as failing to identify a risky borrower is more costly than falsely flagging a safe applicant.
 
-Precision
 
-Recall (especially for default class)
+## 🏦 Real-World Decision Logic (IMPORTANT)
 
-F1-score
+### ML Model Output
+- The trained machine learning model produces a **default probability** for each loan application.
 
-Confusion Matrix
+### Policy Override Layer
+Even if the ML probability is moderate, the system **auto-rejects** a loan when the following high-risk conditions are observed:
 
-Focus was on recall for defaulters, as missing a risky customer is more costly than false positives.
+- Credit Score < 500  
+- Loan-to-Value (LTV) > 90%  
+- EMI-to-Income ratio exceeds the allowed threshold  
 
-🏦 Real-World Decision Logic (IMPORTANT)
-ML Model Output
+➡ If **two or more conditions** are violated, the loan is **Auto-Rejected**.
 
-Produces default probability
+This approach mirrors **real-world banking and NBFC decision systems**, where **policy and compliance rules override model predictions** to manage risk effectively.
 
-Policy Override Layer
+---
 
-Even if ML probability is moderate, the system auto-rejects when:
+## 🧩 Application Features
 
-Credit Score < 500
+- ✅ Auto-calculated Loan-to-Value (LTV)
+- ✅ Income-to-EMI ratio (employment-aware)
+- ✅ ML-based risk probability
+- ✅ Risk levels (Low / Medium / High)
+- ✅ Policy-based Auto Reject
+- ✅ Explainable Reason Codes
+- ✅ Streamlit-based interactive UI
 
-Loan-to-Value (LTV) > 90%
+---
 
-EMI-to-Income ratio exceeds threshold
+## 🖥️ Tech Stack
 
-➡ If 2 or more conditions are violated, the loan is Auto-Rejected.
+- Python  
+- XGBoost  
+- Pandas / NumPy  
+- Scikit-learn  
+- Streamlit  
+- Joblib  
 
-This mirrors real banking systems.
 
-🧩 Application Features
+## 🚀 How to Run Locally
 
-✅ Auto-calculated LTV
-
-✅ Income-to-EMI ratio (employment-aware)
-
-✅ ML-based risk probability
-
-✅ Risk levels (Low / Medium / High)
-
-✅ Policy-based Auto Reject
-
-✅ Explainable Reason Codes
-
-✅ Streamlit-based interactive UI
-
-🖥️ Tech Stack
-
-Python
-
-XGBoost
-
-Pandas / NumPy
-
-Scikit-learn
-
-Streamlit
-
-Joblib
-
-🚀 How to Run Locally
-1️⃣ Clone the Repository
+### 1️⃣ Clone the Repository
 git clone https://github.com/your-username/vehicle-loan-fraud-detection.git
 cd vehicle-loan-fraud-detection
 
-2️⃣ Install Dependencies
+###2️⃣ Install Dependencies
 pip install -r requirements.txt
 
-3️⃣ Run the App
+###3️⃣ Run the App
 streamlit run app.py
 
-🌐 Deployment
+##🌐 Deployment
 
-The application is deployed using Streamlit Cloud, directly connected to this GitHub repository.
+- The application is deployed using Streamlit Cloud, directly connected to this GitHub repository.
+- 🔗 **Link:**
+  https://vehicle-loan-fraud-detection-system.streamlit.app/
 
-📈 Future Enhancements
+##📈 Future Enhancements
 
-SHAP-based explainability plots
+- SHAP-based explainability plots
 
-Admin dashboard for risk monitoring
+- Admin dashboard for risk monitoring
 
-Threshold configuration panel
+- Threshold configuration panel
 
-PDF / CSV loan decision reports
+- PDF / CSV loan decision reports
 
-API version for integration with core banking systems
+- API version for integration with core banking systems
 
-👤 Author
-
-Aman Jai
+##👤 Author
+Aman Jaiswal
