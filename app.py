@@ -22,17 +22,9 @@ st.divider()
 # --------------------------------------------------
 # User Inputs
 # --------------------------------------------------
-disbursed_amount = st.number_input(
-    "Disbursed Amount (₹)", min_value=0, step=1000
-)
-
-asset_cost = st.number_input(
-    "Asset Cost (₹)", min_value=0, step=1000
-)
-
-monthly_income = st.number_input(
-    "Monthly Income (₹)", min_value=0, step=1000
-)
+disbursed_amount = st.number_input("Disbursed Amount (₹)", min_value=0, step=1000)
+asset_cost = st.number_input("Asset Cost (₹)", min_value=0, step=1000)
+monthly_income = st.number_input("Monthly Income (₹)", min_value=0, step=1000)
 
 # --------------------------------------------------
 # Auto LTV Calculation
@@ -53,19 +45,13 @@ if raw_ltv > 90:
 # Other Inputs
 # --------------------------------------------------
 credit_score = st.slider("Credit Score", 300, 900, 650)
+emi = st.number_input("EMI Amount (₹)", min_value=0, step=500)
 
-emi = st.number_input(
-    "EMI Amount (₹)", min_value=0, step=500
-)
-
-employment = st.selectbox(
-    "Employment Type", ["Salaried", "Self-employed"]
-)
-
+employment = st.selectbox("Employment Type", ["Salaried", "Self-employed"])
 employment_encoded = 1 if employment == "Self-employed" else 0
 
 # --------------------------------------------------
-# Income-to-EMI Ratio (Different rules)
+# Income-to-EMI Ratio (Employment-aware)
 # --------------------------------------------------
 if monthly_income > 0:
     emi_ratio = round((emi / monthly_income) * 100, 2)
@@ -74,7 +60,6 @@ else:
 
 st.metric("Income-to-EMI Ratio (%)", emi_ratio)
 
-# Thresholds based on employment type
 if employment == "Self-employed":
     safe_limit = 25
     risk_limit = 40
@@ -96,7 +81,7 @@ if st.button("Check Loan Risk"):
     if asset_cost == 0 or monthly_income == 0:
         st.warning("⚠️ Asset cost and monthly income must be greater than zero")
     else:
-        # Build full feature vector safely
+        # Build full feature vector
         input_dict = feature_medians.copy()
         input_dict["disbursed_amount"] = disbursed_amount
         input_dict["asset_cost"] = asset_cost
@@ -110,7 +95,7 @@ if st.button("Check Loan Risk"):
             columns=feature_names
         )
 
-        # Predict probability
+        # ML Probability
         prob = model.predict_proba(input_df)[0][1]
 
         # --------------------------------------------------
@@ -121,7 +106,7 @@ if st.button("Check Loan Risk"):
         if credit_score < 650:
             reasons.append("Low Credit Score")
 
-        if ltv > 70:
+        if raw_ltv > 70:
             reasons.append("High Loan-to-Value (LTV)")
 
         if emi_ratio > safe_limit:
@@ -131,7 +116,34 @@ if st.button("Check Loan Risk"):
             reasons.append("Income variability due to self-employment")
 
         # --------------------------------------------------
-        # Risk Levels
+        # HARD AUTO-REJECT POLICY (Bank Override)
+        # --------------------------------------------------
+        hard_reject_count = 0
+
+        if credit_score < 500:
+            hard_reject_count += 1
+
+        if raw_ltv > 90:
+            hard_reject_count += 1
+
+        if emi_ratio > risk_limit:
+            hard_reject_count += 1
+
+        if hard_reject_count >= 2:
+            st.error(
+                "🔴 HIGH RISK – AUTO REJECT (Policy Override)\n\n"
+                f"Risk Probability (ML): **{prob:.2f}**\n\n"
+                "Decision: **Auto Reject**"
+            )
+
+            st.markdown("### 🔍 Reason Codes")
+            for r in reasons:
+                st.write(f"• {r}")
+
+            st.stop()   # ⛔ stop further ML-based decision
+
+        # --------------------------------------------------
+        # Risk Levels (ML-Based)
         # --------------------------------------------------
         if prob < 0.3:
             risk = "Low"
