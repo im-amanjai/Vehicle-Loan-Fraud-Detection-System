@@ -147,10 +147,10 @@ This approach mirrors **real-world banking and NBFC decision systems**, where **
 - cd vehicle-loan-fraud-detection
 
 ### 2️⃣ Install Dependencies
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 ### 3️⃣ Run the App
-streamlit run app.py
+- streamlit run app.py
 
 ---
 
