@@ -143,8 +143,8 @@ This approach mirrors **real-world banking and NBFC decision systems**, where **
 ## 🚀 How to Run Locally
 
 ### 1️⃣ Clone the Repository
-git clone https://github.com/your-username/vehicle-loan-fraud-detection.git
-cd vehicle-loan-fraud-detection
+- git clone https://github.com/your-username/vehicle-loan-fraud-detection.git
+- cd vehicle-loan-fraud-detection
 
 ### 2️⃣ Install Dependencies
 pip install -r requirements.txt
@@ -152,11 +152,15 @@ pip install -r requirements.txt
 ### 3️⃣ Run the App
 streamlit run app.py
 
+---
+
 ## 🌐 Deployment
 
 - The application is deployed using Streamlit Cloud, directly connected to this GitHub repository.
 - 🔗 **Link:**
   https://vehicle-loan-fraud-detection-system.streamlit.app/
+
+---
 
 ## 📈 Future Enhancements
 
@@ -169,6 +173,8 @@ streamlit run app.py
 - PDF / CSV loan decision reports
 
 - API version for integration with core banking systems
+  
+---
 
 ## 👤 Author
 Aman Jaiswal
