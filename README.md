@@ -48,8 +48,6 @@ loan_default
 - Removed data leakage columns
 - Balanced class impact using `scale_pos_weight` to handle class imbalance
 
----
-
 ### 2️⃣ Feature Engineering
 Key engineered features include:
 - **Loan-to-Value (LTV)**
@@ -57,8 +55,6 @@ Key engineered features include:
 - **Employment-based risk thresholds**
 
 These features help capture borrower affordability and repayment capacity.
-
----
 
 ### 3️⃣ Model Used
 
@@ -78,7 +74,6 @@ XGBClassifier(
     eval_metric="logloss"
 )
 
-
 ### 4️⃣ Hyperparameter Tuning
 
 Used **RandomizedSearchCV** to optimize key XGBoost hyperparameters for improved performance and generalization:
@@ -91,8 +86,6 @@ Used **RandomizedSearchCV** to optimize key XGBoost hyperparameters for improved
 
 The best-performing parameter combination was selected based on cross-validation results and used to train the **final production model**.
 
----
-
 ### 5️⃣ Model Evaluation
 
 The trained model was evaluated using the following metrics:
@@ -104,6 +97,7 @@ The trained model was evaluated using the following metrics:
 
 The optimization objective prioritized **high recall for defaulters**, as failing to identify a risky borrower is more costly than falsely flagging a safe applicant.
 
+---
 
 ## 🏦 Real-World Decision Logic (IMPORTANT)
 
@@ -144,6 +138,7 @@ This approach mirrors **real-world banking and NBFC decision systems**, where **
 - Streamlit  
 - Joblib  
 
+--- 
 
 ## 🚀 How to Run Locally
 
@@ -151,19 +146,19 @@ This approach mirrors **real-world banking and NBFC decision systems**, where **
 git clone https://github.com/your-username/vehicle-loan-fraud-detection.git
 cd vehicle-loan-fraud-detection
 
-###2️⃣ Install Dependencies
+### 2️⃣ Install Dependencies
 pip install -r requirements.txt
 
-###3️⃣ Run the App
+### 3️⃣ Run the App
 streamlit run app.py
 
-##🌐 Deployment
+## 🌐 Deployment
 
 - The application is deployed using Streamlit Cloud, directly connected to this GitHub repository.
 - 🔗 **Link:**
   https://vehicle-loan-fraud-detection-system.streamlit.app/
 
-##📈 Future Enhancements
+## 📈 Future Enhancements
 
 - SHAP-based explainability plots
 
@@ -175,5 +170,5 @@ streamlit run app.py
 
 - API version for integration with core banking systems
 
-##👤 Author
+## 👤 Author
 Aman Jaiswal
