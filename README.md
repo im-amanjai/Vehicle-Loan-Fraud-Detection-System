@@ -34,9 +34,9 @@ The dataset contains real-world vehicle loan application data including:
 - Loan performance indicators
 
 **Target Variable:**
-loan_default
-1 = Default
-0 = No Default
+loan_default:
+- 1 = Default
+- 0 = No Default
 
 ---
 
